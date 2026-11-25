@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Project_11.Models.ServiceRequest>
+@{
+    ViewBag.Title = "Smart Campus Service Portal";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold text-primary">Smart Campus Service Portal (Project_11)</h2>
+            <p class="text-muted mb-0">Integrated MVC + SQL Server + Web API Feature Extension</p>
+        </div>
+        <div>
+            <a href="@Url.Action("Create", "ServiceRequest")" class="btn btn-success">+ Raise New Request</a>
+            <a href="/api/ServiceApi" target="_blank" class="btn btn-outline-dark">View Live Web API (JSON)</a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-auto">
+            <select name="category" class="form-select" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                <option value="IT Support" @(ViewBag.SelectedCategory == "IT Support" ? "selected" : "")>IT Support</option>
+                <option value="Library" @(ViewBag.SelectedCategory == "Library" ? "selected" : "")>Library</option>
+                <option value="Maintenance" @(ViewBag.SelectedCategory == "Maintenance" ? "selected" : "")>Maintenance</option>
+                <option value="Hostel" @(ViewBag.SelectedCategory == "Hostel" ? "selected" : "")>Hostel</option>
+            </select>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover shadow-sm bg-white">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Enrollment No</th>
+                <th>Student Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Created Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>#@item.RequestId</td>
+                    <td>@item.StudentEnrollment</td>
+                    <td>@item.StudentName</td>
+                    <td><span class="badge bg-info text-dark">@item.Category</span></td>
+                    <td>@item.Description</td>
+                    <td>
+                        <span class="badge @(item.Status == "Resolved" ? "bg-success" : item.Status == "In Progress" ? "bg-warning text-dark" : "bg-secondary")">
+                            @item.Status
+                        </span>
+                    </td>
+                    <td>@item.CreatedDate.ToString("dd-MMM-yyyy hh:mm tt")</td>
+                    <td>
+                        <a href="@Url.Action("UpdateStatus", new { id = item.RequestId })" class="btn btn-sm btn-primary">Update Status</a>
+                        @using (Html.BeginForm("Delete", "ServiceRequest", new { id = item.RequestId }, FormMethod.Post, new { style = "display:inline;" }))
+                        {
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this request?');">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

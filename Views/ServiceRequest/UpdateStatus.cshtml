@@ -1,0 +1,33 @@
+﻿@model Project_11.Models.ServiceRequest
+@{
+    ViewBag.Title = "Update Request Status";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-4" style="max-width: 550px;">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Update Status — Request #@Model.RequestId</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Student:</strong> @Model.StudentName (@Model.StudentEnrollment)</p>
+            <p><strong>Category:</strong> @Model.Category</p>
+            <p><strong>Description:</strong> @Model.Description</p>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.RequestId)
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Select New Status</label>
+                    @Html.DropDownListFor(m => m.Status, new SelectList(new[] { "Pending", "In Progress", "Resolved" }, Model.Status), new { @class = "form-select" })
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Status</button>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>
+            }
+        </div>
+    </div>
+</div>
